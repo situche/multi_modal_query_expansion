@@ -1,12 +1,3 @@
-
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Time    : 22/10/24 20:55
-# @Author  : Chen Yancan
-# @File    : embed_image_as_faiss.py
-# @Email   : yancan@u.nus.edu / yancan@comp.nus.edu.sg
-# @Software : PyCharm
-
 import os
 import pickle
 import torch
@@ -60,8 +51,8 @@ def encode_images_to_faiss(image_paths, index_path='faiss.index', id2image_path_
     model, image_embedder = BLIP_BASELINE()
     
     # Prepare Faiss index
-    dim = 256  # BLIP embedding size (adjust according to your model)
-    index = faiss.IndexFlatIP(dim)  # Inner Product (Cosine similarity when vectors are normalized)
+    dim = 256  # BLIP嵌入大小（根据您的型号进行调整）
+    index = faiss.IndexFlatIP(dim)  # 内积（当向量被归一化时为余弦相似度）
 
     all_embeddings = []
     id2image_path = {}
@@ -72,8 +63,8 @@ def encode_images_to_faiss(image_paths, index_path='faiss.index', id2image_path_
         all_embeddings.append(embedding)
         id2image_path[idx] = image_path
 
-    all_embeddings = np.vstack(all_embeddings)  # Stack all embeddings
-    index.add(all_embeddings)  # Add embeddings to the index
+    all_embeddings = np.vstack(all_embeddings)  # 堆叠所有嵌入
+    index.add(all_embeddings)  # 将嵌入添加到索引
 
     # Save the index and mappings
     faiss.write_index(index, index_path)
@@ -87,7 +78,6 @@ def encode_images_to_faiss(image_paths, index_path='faiss.index', id2image_path_
     print(f"Saved image embeddings to {image_embedding_path}")
 
 if __name__ == '__main__':
-    # Define your image paths here
     # 相同的代码在不同的数据集上运行
     # 加载图片路径
     image_fold = './playground/data/flickr30k/flickr30k_images'
