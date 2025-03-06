@@ -15,7 +15,7 @@ https://drive.google.com/file/d/16HXxAnZzRzTFo9Ay-5nftkRdJCHmUMJA/view
 
 
 
-BLIP目录
+目录结构
 
 ```shell
 BLIP/
