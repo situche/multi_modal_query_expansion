@@ -150,7 +150,7 @@ https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
 
    - **最低 GPU 要求**: RTX 3090
 
-   ### 依赖性
+   ### 依赖
 
    安装所需的软件包（仅安装下面列出的这些；其他的可以使用最新版本）：
 
