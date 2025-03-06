@@ -1,3 +1,3 @@
-download the images file from the link: https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset
+从该链接下载图像文件: https://www.kaggle.com/datasets/awsaf49/coco-2017-dataset
 
-download the val2017.zip
+下载 val2017.zip
