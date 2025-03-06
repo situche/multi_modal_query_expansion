@@ -1,6 +1,6 @@
-This folder should contains [BLIP repository](https://github.com/salesforce/BLIP) for the baseline.
+此文件夹包含 [BLIP 存储库]（https://github.com/salesforce/BLIP）。
 
-Install the BLIP by using the following commands (one folder above):
+使用以下命令安装 BLIP（在上面一个文件夹中）：
 
 ```
 cd ../
@@ -9,13 +9,13 @@ git clone https://github.com/salesforce/BLIP
 
 
 
-Download model weight from google driver
+从谷歌驱动下载模型权重
 
 https://drive.google.com/file/d/16HXxAnZzRzTFo9Ay-5nftkRdJCHmUMJA/view
 
 
 
-The tree of BLIP fold
+BLIP目录
 
 ```shell
 BLIP/
