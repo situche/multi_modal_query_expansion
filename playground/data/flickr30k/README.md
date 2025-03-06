@@ -1,4 +1,4 @@
-playground的结构
+playground的目录结构
 
 ```shell
 playground/
