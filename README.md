@@ -68,24 +68,81 @@ conda activate re
 ## 4. 项目结构与运行
 ### 4.1 项目文件结构
 ```text
-RE/
-├── config.py        # 参数解析模块
-├── Qwen_SFT.py      # 主训练脚本
-├── Dpsk_SFT.py
-├── roberta&ModernBERT.py 
-├── train.jsonl      # 数据集
-└── test.jsonl
+BLIP/
+├── playground/
+│   └── data/                  # 实验性数据目录
+├── flickr30k/                 # Flickr30k 数据集
+│   └── README.md              # Flickr30k 数据集说明
+├── mscoco/                    # MS COCO 数据集
+│   └── README.md              # MS COCO 数据集说明
+├── README.md                   # 主项目文档
+├── embed_image_as_faiss.py     # 图像嵌入FAISS索引脚本
+├── multi_model_query_expansion.py          # 多模型查询扩展脚本
+└── multi_model_query_expansion_mscoco.py   # COCO专用查询扩展脚本
 ```
 
 ### 4.2 Shell运行命令集
 ```bash
-python Qwen_SFT.py \
-  --model_name_or_path "Qwen/Qwen2.5-0.5B-Instruct" \
-  --train_data "./data/train.jsonl" \
-  --output_dir "./output" \
-  --batch_size 4 \
-  --grad_accum_steps 2 \
-  --lr 3e-5 \
-  --warmup_ratio 0.1 \
+python multi_model_query_expansion_mscoco.py \
+  --model_version "llava-v1.6-mistral-7b-hf" \
+  --dataset_path "./data/mscoco/metadata.jsonl" \
+  --image_dir "./coco/coco2017/" \
+  --faiss_index "./checkpoints/m_query_expansion_faiss.index" \
+  --output_dir "./mm_rewrite_res/" \
+  --batch_size 8 \
+  --max_length 512 \
+  --temperature 0.7 \
+  --top_p 0.9 \
+  --start_idx 0 \
+  --log_file "expansion_log.txt"
   --其他需要添加的参数
 ```
+
+## 5. 实验设计
+
+### 5.1 处理流程
+```mermaid
+graph TD
+    A[加载数据集元数据] --> B[初始化多模态模型]
+    B --> C[加载FAISS向量索引]
+    C --> D[图像加载与预处理]
+    D --> E[多模态特征提取]
+    E --> F[初始查询扩展生成]
+    F --> G[相似文本检索]
+    G --> H[查询优化评估]
+    H --> I{优化目标达成？}
+    I -->|否| J[生成改进提示]
+    J --> F
+    I -->|是| K[结果正则化处理]
+    K --> L[JSONL格式输出]
+```
+
+### 5.2 关键技术
+1. **数据预处理**：
+   - 跨模态数据对齐处理：
+     * 图像：尺寸归一化（448×448）与通道标准化（CLIP均值方差）
+     * 文本：提示工程模板注入（如"详细描述这张图片：{原始查询}"）
+   - 特征空间映射：
+     * 视觉特征：ViT分层特征提取
+     * 文本特征：动态分词与注意力掩码生成
+     * 跨模态融合：特征拼接后层归一化
+
+2. **训练配置**：
+   - 多模态优化参数：
+     * 图像：尺寸归一化（448×448）与通道标准化（CLIP均值方差）
+     * 文本：提示工程模板注入（如"详细描述这张图片：{原始查询}"）
+   - 资源约束方案：
+     * 4-bit量化推理（QLoRA适配器）
+     * 梯度检查点激活
+     * FlashAttention-2加速
+   - 收敛控制策略：
+     * 早停监测：验证集CIDEr持续2轮无提升
+     * 早停监测：验证集CIDEr持续2轮无提升
+
+3. **评估方法**：
+   - 检索效用：mAP@K（K=5,10,20）
+   - 核心指标：
+     * 扩展质量得分 = 0.6×CIDEr + 0.2×新增实体比 + 0.2×mAP@10
+     * 检索效率增益：ΔRecall = 扩展后召回率 - 原始召回率
+
+---
