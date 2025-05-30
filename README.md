@@ -33,3 +33,10 @@ MS COCO
     // 其他数据
 }
 ```
+
+## 2. 模型选型
+| 完整名称 | 参数量 | 架构类型 |
+|----------|--------|----------|
+|BLIP| 4.46亿 | Encoder-Decode |
+|llava-v1.6-mistral-7b-hf| 70亿 | Decoder-Only |
+|Llama-3.1-8B-Instruct| 80亿 | Decoder-Only |
